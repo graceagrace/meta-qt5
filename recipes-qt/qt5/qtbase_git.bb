@@ -36,6 +36,9 @@ SRC_URI += "\
     file://0019-tst_QPluginLoader-Simplify-creating-a-fake-pointer-i.patch \
     file://0021-rcc-Just-dcument-file-name-without-full-path-to-redu.patch \
     file://0022-testlib-don-t-track-the-build-or-source-directories.patch \
+    file://0023-qdbusxml2cpp-don-t-track-command-line.patch \
+"
+SRC_URI += "\
     file://0001-CVE-2023-51714-qtbase-5.15.diff \
     file://0002-CVE-2023-51714-qtbase-5.15.diff \
     file://0028-Remove-host-paths-from-qmake.patch \
@@ -229,7 +232,7 @@ do_configure() {
     # Avoid qmake error "Cannot read [...]/usr/lib/qt5/mkspecs/oe-device-extra.pri: No such file or directory" during configuration
     touch ${S}/mkspecs/oe-device-extra.pri
 
-    ${S}/configure -v \
+    MAKEFLAGS="${PARALLEL_MAKE}" ${S}/configure -v \
         -${QT_EDITION} -confirm-license \
         -sysroot ${STAGING_DIR_TARGET} \
         -prefix ${OE_QMAKE_PATH_PREFIX} \
@@ -300,7 +303,7 @@ do_install:append() {
 
     # Remove references to buildmachine paths in examples target files if examples feature is enabled
     if ${@bb.utils.contains('PACKAGECONFIG', 'examples', 'true', 'false', d)}; then
-        sed -i -e "s:${B}:${prefix}:g" ${D}${datadir}/examples/widgets/tools/plugandpaint/plugins/libpnp_basictools.prl
+        sed -i -e "s:${B}:${prefix}:g" ${D}${OE_QMAKE_PATH_EXAMPLES}/widgets/tools/plugandpaint/plugins/libpnp_basictools.prl
     fi
 }
 
