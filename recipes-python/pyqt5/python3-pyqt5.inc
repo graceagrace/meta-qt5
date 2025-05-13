@@ -32,7 +32,6 @@ DISABLED_FEATURES = " \
 
 PYQT_MODULES = " \
     QtCore \
-    QtGui \
     QtXml \
 "
 
